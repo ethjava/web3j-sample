@@ -7,6 +7,10 @@ import org.web3j.protocol.http.HttpService;
 
 import java.io.IOException;
 
+
+/**
+ * 快速开始
+ */
 public class QuickStart {
 
 	private static Web3j web3j;
