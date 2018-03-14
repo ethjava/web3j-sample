@@ -22,7 +22,7 @@ import java.util.List;
 /**
  * 基于ERC20的代币
  */
-public class tokenClient {
+public class TokenClient {
 
 	private static Web3j web3j;
 
