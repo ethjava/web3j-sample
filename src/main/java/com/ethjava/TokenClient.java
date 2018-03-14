@@ -37,15 +37,15 @@ public class TokenClient {
 
 	public static void main(String[] args) {
 		web3j = Web3j.build(new HttpService(Environment.RPC_URL));
-		getTokenBalance(fromAddress, contractAddress);
-		System.out.println(getTokenName(contractAddress));
-		System.out.println(getTokenDeDecimals(contractAddress));
+		getTokenBalance(web3j, fromAddress, contractAddress);
+		System.out.println(getTokenName(web3j, contractAddress));
+		System.out.println(getTokenDecimals(web3j, contractAddress));
 	}
 
 	/**
 	 * 查询代币余额
 	 */
-	private static BigInteger getTokenBalance(String fromAddress, String contractAddress) {
+	public static BigInteger getTokenBalance(Web3j web3j, String fromAddress, String contractAddress) {
 
 		String methodName = "balanceOf";
 		List<Type> inputParameters = new ArrayList<>();
@@ -74,7 +74,7 @@ public class TokenClient {
 		return balanceValue;
 	}
 
-	private static String getTokenName(String contractAddress) {
+	public static String getTokenName(Web3j web3j, String contractAddress) {
 		String methodName = "name";
 		String name = null;
 		String fromAddr = emptyAddress;
@@ -101,7 +101,7 @@ public class TokenClient {
 		return name;
 	}
 
-	private static int getTokenDeDecimals(String contractAddress) {
+	public static int getTokenDecimals(Web3j web3j, String contractAddress) {
 		String methodName = "decimals";
 		String fromAddr = emptyAddress;
 		int decimal = 0;
