@@ -1,16 +1,13 @@
 package com.ethjava;
 
 import com.ethjava.utils.Environment;
-import org.web3j.crypto.CipherException;
-import org.web3j.crypto.Credentials;
-import org.web3j.crypto.ECKeyPair;
-import org.web3j.crypto.WalletUtils;
+import org.web3j.crypto.*;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.http.HttpService;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.math.BigInteger;
+import java.net.URL;
 
 public class Security {
 	private static Web3j web3j;
@@ -24,6 +21,9 @@ public class Security {
 		importPrivateKey(new BigInteger("", 16),
 				"yzw",
 				WalletUtils.getTestnetKeyDirectory());
+
+		exportBip39Wallet(WalletUtils.getTestnetKeyDirectory(),
+				"yzw");
 	}
 
 	/**
@@ -59,6 +59,22 @@ public class Security {
 					new File(directory),
 					true);
 			System.out.println("keystore name " + keystoreName);
+		} catch (CipherException | IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * 生成带助记词的账号
+	 *
+	 * @param keystorePath
+	 * @param password
+	 */
+	private static void exportBip39Wallet(String keystorePath, String password) {
+		try {
+			// TODO: 2018/3/14 会抛异常 已经向官方提issue 待回复
+			Bip39Wallet bip39Wallet = WalletUtils.generateBip39Wallet(password, new File(keystorePath));
+			System.out.println(bip39Wallet);
 		} catch (CipherException | IOException e) {
 			e.printStackTrace();
 		}
