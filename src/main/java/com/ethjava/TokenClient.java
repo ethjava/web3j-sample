@@ -66,8 +66,6 @@ public class TokenClient {
 			ethCall = web3j.ethCall(transaction, DefaultBlockParameterName.LATEST).send();
 			List<Type> results = FunctionReturnDecoder.decode(ethCall.getValue(), function.getOutputParameters());
 			balanceValue = (BigInteger) results.get(0).getValue();
-			String balance = balanceValue.toString();
-			System.out.println(balance);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

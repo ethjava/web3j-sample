@@ -70,7 +70,7 @@ public class TokenBalanceTask {
 		for (String address : addressList) {
 			for (Token token : tokenList) {
 				BigDecimal balance = new BigDecimal(TokenClient.getTokenBalance(web3j, address, token.contractAddress));
-				balance.divide(BigDecimal.valueOf(token.decimals));
+				balance.divide(BigDecimal.TEN.pow(token.decimals));
 				System.out.println("address " + address + " name " + token.name + " balance " + balance);
 			}
 		}
