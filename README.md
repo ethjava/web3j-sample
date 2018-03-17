@@ -8,6 +8,7 @@ web3 for java 样例程序
 - [AccountManager](https://github.com/ethjava/web3j-sample/blob/master/src/main/java/com/ethjava/AccountManager.java) 账号相关接口
 - [TransactionClient](https://github.com/ethjava/web3j-sample/blob/master/src/main/java/com/ethjava/TransactionClient.java) eth转账相关接口
 - [TokenClient](https://github.com/ethjava/web3j-sample/blob/master/src/main/java/com/ethjava/TokenClient.java) token代币相关查询及转账
+- [ColdWallet](https://github.com/ethjava/web3j-sample/blob/master/src/main/java/com/ethjava/ColdWallet.java) 冷钱包创建、交易
 - [TokenBalanceTask](https://github.com/ethjava/web3j-sample/blob/master/src/main/java/com/ethjava/TokenBalanceTask.java) 批量token代币余额查询
 - [EthInfo](https://github.com/ethjava/web3j-sample/blob/master/src/main/java/com/ethjava/EthInfo.java) 连接节点的相关信息接口
 - [Security](https://github.com/ethjava/web3j-sample/blob/master/src/main/java/com/ethjava/Security.java) 公钥私钥相关接口
