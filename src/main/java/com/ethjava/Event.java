@@ -5,4 +5,5 @@ package com.ethjava;
  * 监听合约event
  */
 public class Event {
+
 }
