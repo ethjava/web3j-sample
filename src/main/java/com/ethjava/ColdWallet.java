@@ -87,26 +87,26 @@ public class ColdWallet {
 		}
 	}
 
-	private static void testTokenTransaction() {
+	private static void testTokenTransaction(Web3j web3j, String fromAddress, String privateKey, String contractAddress, String toAddress, double amount, int decimals) {
 		BigInteger nonce;
 		EthGetTransactionCount ethGetTransactionCount = null;
 		try {
-			ethGetTransactionCount = web3j.ethGetTransactionCount(address, DefaultBlockParameterName.PENDING).send();
+			ethGetTransactionCount = web3j.ethGetTransactionCount(fromAddress, DefaultBlockParameterName.PENDING).send();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		if (ethGetTransactionCount == null) return;
 		nonce = ethGetTransactionCount.getTransactionCount();
+		System.out.println("nonce " + nonce);
 		BigInteger gasPrice = Convert.toWei(BigDecimal.valueOf(3), Convert.Unit.GWEI).toBigInteger();
 		BigInteger gasLimit = BigInteger.valueOf(60000);
-		String contractAddress = "0x4c1ae77bc2df45fb68b13fa1b4f000305209b0cb".toLowerCase();
 		BigInteger value = BigInteger.ZERO;
 		//token转账参数
 		String methodName = "transfer";
 		List<Type> inputParameters = new ArrayList<>();
 		List<TypeReference<?>> outputParameters = new ArrayList<>();
-		Address tAddress = new Address("0x6c0f49aF552F2326DD851b68832730CB7b6C0DaF");
-		Uint256 tokenValue = new Uint256(BigInteger.valueOf(10000).multiply(BigInteger.TEN.pow(5)));
+		Address tAddress = new Address(toAddress);
+		Uint256 tokenValue = new Uint256(BigDecimal.valueOf(amount).multiply(BigDecimal.TEN.pow(decimals)).toBigInteger());
 		inputParameters.add(tAddress);
 		inputParameters.add(tokenValue);
 		TypeReference<Bool> typeReference = new TypeReference<Bool>() {
@@ -115,11 +115,10 @@ public class ColdWallet {
 		Function function = new Function(methodName, inputParameters, outputParameters);
 		String data = FunctionEncoder.encode(function);
 
-		byte chainId = ChainId.ROPSTEN;//测试网络
-		String privateKey = ColdWallet.privateKey;
+		byte chainId = ChainId.NONE;
 		String signedData;
 		try {
-			signedData = signTransaction(nonce, gasPrice, gasLimit, contractAddress, value, data, chainId, privateKey);
+			signedData = ColdWallet.signTransaction(nonce, gasPrice, gasLimit, contractAddress, value, data, chainId, privateKey);
 			if (signedData != null) {
 				EthSendTransaction ethSendTransaction = web3j.ethSendRawTransaction(signedData).send();
 				System.out.println(ethSendTransaction.getTransactionHash());
@@ -135,7 +134,7 @@ public class ColdWallet {
 	 *
 	 * @param password 密码
 	 */
-	private static void createWallet(String password) throws InvalidAlgorithmParameterException, NoSuchAlgorithmException, NoSuchProviderException, CipherException, JsonProcessingException {
+	public static void createWallet(String password) throws InvalidAlgorithmParameterException, NoSuchAlgorithmException, NoSuchProviderException, CipherException, JsonProcessingException {
 		WalletFile walletFile;
 		ECKeyPair ecKeyPair = Keys.createEcKeyPair();
 		walletFile = Wallet.createStandard(password, ecKeyPair);
@@ -151,20 +150,24 @@ public class ColdWallet {
 	 * @param keystore
 	 * @param password
 	 */
-	private static void decryptWallet(String keystore, String password) throws IOException {
+	public static String decryptWallet(String keystore, String password) {
+		String privateKey = null;
 		ObjectMapper objectMapper = ObjectMapperFactory.getObjectMapper();
-		WalletFile walletFile = objectMapper.readValue(keystore, WalletFile.class);
-		ECKeyPair ecKeyPair = null;
 		try {
+			WalletFile walletFile = objectMapper.readValue(keystore, WalletFile.class);
+			ECKeyPair ecKeyPair = null;
 			ecKeyPair = Wallet.decrypt(password, walletFile);
-			String privateKey = ecKeyPair.getPrivateKey().toString(16);
+			privateKey = ecKeyPair.getPrivateKey().toString(16);
 			System.out.println(privateKey);
 		} catch (CipherException e) {
 			if ("Invalid password provided".equals(e.getMessage())) {
 				System.out.println("密码错误");
 			}
 			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
+		return privateKey;
 	}
 
 	/**
