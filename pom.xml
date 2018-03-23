@@ -53,5 +53,12 @@
             <version>1.7.25</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.bitcoinj</groupId>
+            <artifactId>bitcoinj-core</artifactId>
+            <version>0.14.6</version>
+            <scope>compile</scope>
+        </dependency>
+
     </dependencies>
 </project>
