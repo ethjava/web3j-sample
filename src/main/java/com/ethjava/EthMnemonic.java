@@ -156,7 +156,7 @@ public class EthMnemonic {
 			this.publicKey = publicKey;
 			this.mnemonic = mnemonic;
 			this.mnemonicPath = mnemonicPath;
-			Address = address;
+			this.Address = address;
 			this.keystore = keystore;
 		}
 	}
