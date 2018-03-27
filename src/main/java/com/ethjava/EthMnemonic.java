@@ -2,16 +2,16 @@ package com.ethjava;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.bitcoinj.crypto.ChildNumber;
-import org.bitcoinj.crypto.DeterministicKey;
-import org.bitcoinj.crypto.HDKeyDerivation;
+import org.bitcoinj.crypto.*;
 import org.bitcoinj.wallet.DeterministicSeed;
 import org.web3j.crypto.CipherException;
 import org.web3j.crypto.ECKeyPair;
 import org.web3j.crypto.Wallet;
 import org.web3j.crypto.WalletFile;
 import org.web3j.protocol.ObjectMapperFactory;
+import org.web3j.utils.Numeric;
 
+import java.io.IOException;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -96,12 +96,35 @@ public class EthMnemonic {
 	}
 
 	private static EthHDWallet createEthWallet(DeterministicSeed ds, String[] pathArray, String password) {
-		//种子
+		//根私钥
 		byte[] seedBytes = ds.getSeedBytes();
-		System.out.println(Arrays.toString(seedBytes));
+		System.out.println("根私钥 " + Arrays.toString(seedBytes));
 		//助记词
 		List<String> mnemonic = ds.getMnemonicCode();
-		System.out.println(Arrays.toString(mnemonic.toArray()));
+		System.out.println("助记词 " + Arrays.toString(mnemonic.toArray()));
+
+		try {
+			//助记词种子
+			byte[] mnemonicSeedBytes = MnemonicCode.INSTANCE.toEntropy(mnemonic);
+			System.out.println("助记词种子 " + Arrays.toString(mnemonicSeedBytes));
+			ECKeyPair mnemonicKeyPair = ECKeyPair.create(mnemonicSeedBytes);
+			WalletFile walletFile = Wallet.createLight(password, mnemonicKeyPair);
+			ObjectMapper objectMapper = ObjectMapperFactory.getObjectMapper();
+			//存这个keystore 用完后删除
+			String jsonStr = objectMapper.writeValueAsString(walletFile);
+			System.out.println("mnemonic keystore " + jsonStr);
+			//验证
+			WalletFile checkWalletFile = objectMapper.readValue(jsonStr, WalletFile.class);
+			ECKeyPair ecKeyPair = Wallet.decrypt(password, checkWalletFile);
+			byte[] checkMnemonicSeedBytes = Numeric.hexStringToByteArray(ecKeyPair.getPrivateKey().toString(16));
+			System.out.println("验证助记词种子 "
+					+ Arrays.toString(checkMnemonicSeedBytes));
+			List<String> checkMnemonic = MnemonicCode.INSTANCE.toMnemonic(checkMnemonicSeedBytes);
+			System.out.println("验证助记词 " + Arrays.toString(checkMnemonic.toArray()));
+
+		} catch (MnemonicException.MnemonicLengthException | MnemonicException.MnemonicWordException | MnemonicException.MnemonicChecksumException | CipherException | IOException e) {
+			e.printStackTrace();
+		}
 
 		if (seedBytes == null)
 			return null;
@@ -121,16 +144,17 @@ public class EthMnemonic {
 		System.out.println("path " + dkKey.getPathAsString());
 
 		ECKeyPair keyPair = ECKeyPair.create(dkKey.getPrivKeyBytes());
-		System.out.println("privateKey " + keyPair.getPrivateKey().toString(16));
-		System.out.println("publicKey " + keyPair.getPublicKey().toString(16));
+		System.out.println("eth privateKey " + keyPair.getPrivateKey().toString(16));
+		System.out.println("eth publicKey " + keyPair.getPublicKey().toString(16));
 
 		EthHDWallet ethHDWallet = null;
 		try {
 			WalletFile walletFile = Wallet.createLight(password, keyPair);
-			System.out.println("address " + "0x" + walletFile.getAddress());
+			System.out.println("eth address " + "0x" + walletFile.getAddress());
 			ObjectMapper objectMapper = ObjectMapperFactory.getObjectMapper();
+			//存
 			String jsonStr = objectMapper.writeValueAsString(walletFile);
-			System.out.println("keystore " + jsonStr);
+			System.out.println("eth keystore " + jsonStr);
 
 			ethHDWallet = new EthHDWallet(keyPair.getPrivateKey().toString(16),
 					keyPair.getPublicKey().toString(16),
