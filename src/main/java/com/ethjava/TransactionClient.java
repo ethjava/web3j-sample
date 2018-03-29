@@ -96,7 +96,7 @@ public class TransactionClient {
 	private static BigInteger getTransactionNonce(String address) {
 		BigInteger nonce = BigInteger.ZERO;
 		try {
-			EthGetTransactionCount ethGetTransactionCount = web3j.ethGetTransactionCount(address, DefaultBlockParameterName.LATEST).send();
+			EthGetTransactionCount ethGetTransactionCount = web3j.ethGetTransactionCount(address, DefaultBlockParameterName.PENDING).send();
 			nonce = ethGetTransactionCount.getTransactionCount();
 		} catch (IOException e) {
 			e.printStackTrace();

@@ -249,7 +249,7 @@ public class TokenClient {
 				String data = FunctionEncoder.encode(function);
 
 				EthGetTransactionCount ethGetTransactionCount = web3j
-						.ethGetTransactionCount(fromAddress, DefaultBlockParameterName.LATEST).sendAsync().get();
+						.ethGetTransactionCount(fromAddress, DefaultBlockParameterName.PENDING).sendAsync().get();
 				BigInteger nonce = ethGetTransactionCount.getTransactionCount();
 				BigInteger gasPrice = Convert.toWei(BigDecimal.valueOf(5), Convert.Unit.GWEI).toBigInteger();
 
