@@ -7,6 +7,7 @@ import org.web3j.abi.TypeReference;
 import org.web3j.abi.datatypes.*;
 import org.web3j.abi.datatypes.generated.Uint256;
 import org.web3j.abi.datatypes.generated.Uint8;
+import org.web3j.crypto.Hash;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.admin.Admin;
 import org.web3j.protocol.admin.methods.response.PersonalUnlockAccount;
@@ -16,12 +17,17 @@ import org.web3j.protocol.core.methods.response.EthCall;
 import org.web3j.protocol.core.methods.response.EthGetTransactionCount;
 import org.web3j.protocol.core.methods.response.EthSendTransaction;
 import org.web3j.protocol.http.HttpService;
+import org.web3j.rlp.RlpEncoder;
+import org.web3j.rlp.RlpList;
+import org.web3j.rlp.RlpString;
 import org.web3j.utils.Convert;
+import org.web3j.utils.Numeric;
 
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -49,9 +55,10 @@ public class TokenClient {
 		System.out.println(getTokenSymbol(web3j, contractAddress));
 		System.out.println(getTokenTotalSupply(web3j, contractAddress));
 		System.out.println(sendTokenTransaction(
-				fromAddress,"yzw",
-				"0x6c0f49aF552F2326DD851b68832730CB7b6C0DaF",contractAddress,
+				fromAddress, "yzw",
+				"0x6c0f49aF552F2326DD851b68832730CB7b6C0DaF", contractAddress,
 				BigInteger.valueOf(100000)));
+		System.out.println(calculateContractAddress("0x6c0f49aF552F2326DD851b68832730CB7b6C0DaF".toLowerCase(), 294));
 	}
 
 	/**
@@ -223,7 +230,7 @@ public class TokenClient {
 	/**
 	 * 代币转账
 	 */
-	public static String sendTokenTransaction(String fromAddress, String password, String toAddress, String contractAddress,BigInteger amount) {
+	public static String sendTokenTransaction(String fromAddress, String password, String toAddress, String contractAddress, BigInteger amount) {
 		String txHash = null;
 
 		try {
@@ -264,5 +271,28 @@ public class TokenClient {
 		}
 
 		return txHash;
+	}
+
+	/**
+	 * 计算合约地址
+	 *
+	 * @param address
+	 * @param nonce
+	 * @return
+	 */
+	private static String calculateContractAddress(String address, long nonce) {
+		//样例 https://ropsten.etherscan.io/tx/0x728a95b02beec3de9fb09ede00ca8ca6939bad2ad26c702a8392074dc04844c7
+		byte[] addressAsBytes = Numeric.hexStringToByteArray(address);
+
+		byte[] calculatedAddressAsBytes =
+				Hash.sha3(RlpEncoder.encode(
+						new RlpList(
+								RlpString.create(addressAsBytes),
+								RlpString.create((nonce)))));
+
+		calculatedAddressAsBytes = Arrays.copyOfRange(calculatedAddressAsBytes,
+				12, calculatedAddressAsBytes.length);
+		String calculatedAddressAsHex = Numeric.toHexString(calculatedAddressAsBytes);
+		return calculatedAddressAsHex;
 	}
 }
