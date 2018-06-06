@@ -14,6 +14,7 @@ public class IBAN {
 	 * 根据官方支持的IBAN规则生成二维码 目前支持的有imtoken kcash
 	 * 参考url
 	 * https://github.com/ethereum/web3.js/blob/develop/lib/web3/iban.js
+	 * 可以防止地址错误（有两位校验和）
 	 */
 	public static void main(String[] args) {
 		getIBAN();
@@ -57,10 +58,11 @@ public class IBAN {
 		checkDigit = checkDigit.substring(checkDigit.length() - 2);
 //		System.out.println(checkDigit);
 		String IBAN = "XE" + checkDigit + bban;
-		String qrCodeString = IBAN + "?token=ETH&amount=5";
+		String qrCodeString = "iban:" + IBAN + "?token=ETH&amount=5";
 		System.out.println("IBAN " + IBAN);
 		System.out.println("验证 " + validateIBAN(IBAN));
 		System.out.println("qrcode " + qrCodeString);
+		decodeQRString(qrCodeString);
 	}
 
 	private static boolean validateIBAN(String iban) {
@@ -77,5 +79,37 @@ public class IBAN {
 		BigInteger bigInt = new BigInteger(sb.toString());
 
 		return bigInt.mod(BigInteger.valueOf(97)).intValue() == 1;
+	}
+
+	private static void decodeQRString(String result) {
+		int ibanEndpoint = result.indexOf("?");
+		String iban = result.substring(5, ibanEndpoint < 0 ? result.length() : ibanEndpoint);
+		String address = IBAN2Address(iban);
+		String query = result.substring(ibanEndpoint + 1, result.length());
+		String[] params = query.split("&");
+		String token = null;
+		String amount = null;
+		for (String param : params) {
+			if (param.startsWith("token=")) {
+				token = param.substring(6);
+				continue;
+			}
+			if (param.startsWith("amount=")) {
+				amount = param.substring(7);
+			}
+		}
+		System.out.println("decodeQRString");
+		System.out.println("address " + address);
+		System.out.println("token " + token);
+		System.out.println("amount " + address);
+	}
+
+	private static String IBAN2Address(String iban) {
+		String base36 = iban.substring(4);
+		StringBuilder base16 = new StringBuilder(new BigInteger(base36, 36).toString(16));
+		while (base16.length() < 20) {
+			base16.insert(0, "0");
+		}
+		return "0x" + base16.toString().toLowerCase();
 	}
 }
