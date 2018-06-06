@@ -15,5 +15,7 @@ web3 for java 样例程序
 - [EthMnemonic](https://github.com/ethjava/web3j-sample/blob/master/src/main/java/com/ethjava/EthMnemonic.java) 生成、导入助记词(需要比特币的jar包 可以查看pom.xml)
 - [Filter](https://github.com/ethjava/web3j-sample/blob/master/src/main/java/com/ethjava/Filter.java) 新块、新交易相关监听
 - [ContractEvent](https://github.com/ethjava/web3j-sample/blob/master/src/main/java/com/ethjava/ContractEvent.java) 执行合约相关log监听
+- [DecodeMessage](https://github.com/ethjava/web3j-sample/blob/master/src/main/java/com/ethjava/DecodeMessage.java) 加密后的交易数据解析
+- [IBAN](https://github.com/ethjava/web3j-sample/blob/master/src/main/java/com/ethjava/IBAN.java) 根据官方规则生成iban及付款二维码
 
 基本功能demo已完成
