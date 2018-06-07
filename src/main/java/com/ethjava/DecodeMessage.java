@@ -20,12 +20,13 @@ public class DecodeMessage {
 	 * 本类将分析这个字符串
 	 */
 	public static void main(String[] args) {
-		String signedData = "0xf8a4120f82ea60944c1ae77bc2df45fb68b13fa1b4f000305209b0cb80b844a9059cbb000000000000000000000000c9e1718c3168474b37969ac1aa5602cceef0cd1600000000000000000000000000000000000000000000000000000000000003e81ba062091870dc1d5cdfd5a9fb7422df0321ada586de85df8e3e89ed7b3773cfc393a00a121d34b41bfc15c8dab4c69b7247ac7066cb38a256cc4856d57558dce78f7d";
+		String signedData = "0xf8ac8201518506fc23ac00830493e094fda023cea60a9f421d74ac49f9a015880a77dd7280b844a9059cbb000000000000000000000000b5dbd2e4093a501f1d1e645f04cef5815a1581d7000000000000000000000000000000000000000000000004c53ecdc18a6000001ca03d710f3c5aabde2733938c44c0b1448f96e760c030205562f59889557397faa4a007110abbcfa343381a2f713d6339d3fa751200f82cc2f06a4d1967b4eaf61d50";
 		decodeMessage(signedData);
 
 	}
 
 	private static void decodeMessage(String signedData) {
+		//样例 https://ropsten.etherscan.io/tx/0xfd8acd10d72127f29f0a01d8bcaf0165665b5598781fe01ca4bceaa6ab9f2cb0
 		try {
 			System.out.println(signedData);
 			System.out.println("解密 start " + System.currentTimeMillis());
@@ -37,12 +38,12 @@ public class DecodeMessage {
 			String to = Numeric.toHexString(((RlpString) values.get(3)).getBytes());
 			BigInteger value = Numeric.toBigInt(((RlpString) values.get(4)).getBytes());
 			String data = Numeric.toHexString(((RlpString) values.get(5)).getBytes());
-			RawTransaction rawTransaction1 = RawTransaction.createTransaction(nonce, gasPrice, gasLimit, to, value, data);
+			RawTransaction rawTransaction = RawTransaction.createTransaction(nonce, gasPrice, gasLimit, to, value, data);
 			RlpString v = (RlpString) values.get(6);
 			RlpString r = (RlpString) values.get(7);
 			RlpString s = (RlpString) values.get(8);
 			Sign.SignatureData signatureData = new Sign.SignatureData(v.getBytes()[0], r.getBytes(), s.getBytes());
-			BigInteger pubKey = Sign.signedMessageToKey(TransactionEncoder.encode(rawTransaction1), signatureData);
+			BigInteger pubKey = Sign.signedMessageToKey(TransactionEncoder.encode(rawTransaction), signatureData);
 			System.out.println("publicKey " + pubKey.toString(16));
 			String address = Numeric.prependHexPrefix(Keys.getAddress(pubKey));
 			System.out.println("address " + address);

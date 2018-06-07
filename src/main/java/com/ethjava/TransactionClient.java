@@ -139,5 +139,5 @@ public class TransactionClient {
 		return txHash;
 	}
 
-	// TODO: 2018/3/13 使用 web3j.ethSendRawTransaction() 发送交易 需要用私钥自签名交易
+	//使用 web3j.ethSendRawTransaction() 发送交易 需要用私钥自签名交易 详见ColdWallet.java
 }

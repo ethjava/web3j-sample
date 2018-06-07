@@ -17,5 +17,6 @@ web3 for java 样例程序
 - [ContractEvent](https://github.com/ethjava/web3j-sample/blob/master/src/main/java/com/ethjava/ContractEvent.java) 执行合约相关log监听
 - [DecodeMessage](https://github.com/ethjava/web3j-sample/blob/master/src/main/java/com/ethjava/DecodeMessage.java) 加密后的交易数据解析
 - [IBAN](https://github.com/ethjava/web3j-sample/blob/master/src/main/java/com/ethjava/IBAN.java) 根据官方规则生成iban及付款二维码
+- [Calculate](https://github.com/ethjava/web3j-sample/blob/master/src/main/java/com/ethjava/Calculate.java) 在发布合约前计算合约地址，根据签名后的交易信息计算TxHash
 
 基本功能demo已完成
