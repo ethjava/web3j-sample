@@ -38,7 +38,7 @@
         <dependency>
             <groupId>org.web3j</groupId>
             <artifactId>core</artifactId>
-            <version>3.3.1</version>
+            <version>3.4.0</version>
         </dependency>
 
         <dependency>
@@ -58,6 +58,12 @@
             <artifactId>bitcoinj-core</artifactId>
             <version>0.14.6</version>
             <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.16</version>
         </dependency>
 
     </dependencies>
