@@ -40,7 +40,10 @@ public class DecodeMessage {
 			RlpString v = (RlpString) values.get(6);
 			RlpString r = (RlpString) values.get(7);
 			RlpString s = (RlpString) values.get(8);
-			Sign.SignatureData signatureData = new Sign.SignatureData(v.getBytes()[0], r.getBytes(), s.getBytes());
+			Sign.SignatureData signatureData = new Sign.SignatureData(
+					v.getBytes()[0],
+					Numeric.toBytesPadded(Numeric.toBigInt(r.getBytes()), 32),
+					Numeric.toBytesPadded(Numeric.toBigInt(s.getBytes()), 32));
 			BigInteger pubKey = Sign.signedMessageToKey(TransactionEncoder.encode(rawTransaction), signatureData);
 			System.out.println("publicKey " + pubKey.toString(16));
 			String address = Numeric.prependHexPrefix(Keys.getAddress(pubKey));
