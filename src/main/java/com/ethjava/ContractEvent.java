@@ -33,13 +33,10 @@ public class ContractEvent {
 				contractAddress);
 		Event event = new Event("Transfer",
 				Arrays.<TypeReference<?>>asList(
-						new TypeReference<Address>() {
+						new TypeReference<Address>(true) {
 						},
-						new TypeReference<Address>() {
-						}
-				),
-				Arrays.<TypeReference<?>>asList(
-						new TypeReference<Uint256>() {
+						new TypeReference<Address>(true) {
+						}, new TypeReference<Uint256>(false) {
 						}
 				)
 		);
