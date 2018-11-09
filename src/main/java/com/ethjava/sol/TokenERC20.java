@@ -64,13 +64,11 @@ public class TokenERC20 extends Contract {
     public static final String FUNC_ALLOWANCE = "allowance";
 
     public static final Event TRANSFER_EVENT = new Event("Transfer", 
-            Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Address>() {}),
-            Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
+            Arrays.<TypeReference<?>>asList(new TypeReference<Address>(true) {}, new TypeReference<Address>(true) {},new TypeReference<Uint256>(false) {}));
     ;
 
     public static final Event BURN_EVENT = new Event("Burn", 
-            Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}),
-            Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
+            Arrays.<TypeReference<?>>asList(new TypeReference<Address>(true) {},new TypeReference<Uint256>(false) {}));
     ;
 
     protected TokenERC20(String contractAddress, Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit) {
